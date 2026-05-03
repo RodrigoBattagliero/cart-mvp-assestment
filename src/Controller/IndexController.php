@@ -73,7 +73,7 @@ class IndexController extends AbstractController
     #[Route('/api/total', name: 'app_total', methods: ['GET'])]
     public function getTotal(): JsonResponse
     {
-
-        return $this->json(['total' => 1]);
+        $total = $this->cartHandler->getTotal();
+        return $this->json(['total' => $total]);
     }
 }
