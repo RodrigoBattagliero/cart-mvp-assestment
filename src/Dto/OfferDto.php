@@ -4,9 +4,12 @@ namespace App\Dto;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
-class OfferConfigDto
+readonly class OfferDto
 {
     public function __construct(
+        #[Assert\NotBlank]
+        public string $type,
+
         #[Assert\NotBlank]
         public string $product_trigger,
         
