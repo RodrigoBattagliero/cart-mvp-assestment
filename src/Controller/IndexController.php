@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Dto\AddProductToCart;
 use App\Dto\CatalogConfigurationDto;
 use App\Handler\CartHandler;
 use Exception;
@@ -55,11 +56,18 @@ class IndexController extends AbstractController
         return $this->json(null, 201);
     }
 
-    #[Route('/api/add', name: 'app_add_product', methods: ['POST'])]
-    public function addProduct(): JsonResponse
+    #[Route('/api/add', name: 'app_add_product', methods: ['PUT'])]
+    public function addProduct(
+        #[MapRequestPayload] AddProductToCart $addProductToCart
+    ): JsonResponse
     {
+        try {
+            $items = $this->cartHandler->addItem($addProductToCart);
+        } catch (Exception $e) {
+            dd($e);
+        }
 
-        return $this->json(null, 201);
+        return $this->json($items);
     }
 
     #[Route('/api/total', name: 'app_total', methods: ['GET'])]
