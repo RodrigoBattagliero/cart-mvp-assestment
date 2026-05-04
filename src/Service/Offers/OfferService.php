@@ -58,19 +58,4 @@ class OfferService
         return $offerStrategy->applyOffer();
         
     }
-
-    private function getOfferByProduct(
-        ProductDto $product,
-        array $offers
-    ): ?OfferDto
-    {
-        if ($offers) {
-            foreach ($offers as $offer) {
-                if ($offer->product_trigger == $product->code) {
-                    return $offer;
-                }
-            }
-        }
-        return null;
-    }
 }
