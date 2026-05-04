@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service;
+namespace App\Service\Offers;
 
 use App\Dto\OfferDto;
 use App\Dto\ProductDto;

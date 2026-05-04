@@ -5,7 +5,8 @@ namespace App\Handler;
 use App\Dto\AddProductToCart;
 use App\Dto\CatalogConfigurationDto;
 use App\Dto\ProductDto;
-use App\Service\OfferService;
+use App\Service\DeliveryRules\DeliveryRulesService;
+use App\Service\Offers\OfferService;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class CartHandler
@@ -13,6 +14,7 @@ class CartHandler
     public function __construct(
         private RequestStack $requestStack,
         private OfferService $offerService,
+        private DeliveryRulesService $deliveryRulesService,
     ) {}
 
     public function saveConfiguration(
@@ -74,27 +76,9 @@ class CartHandler
                 $totalCost += $partialCost + ($remaningAmount * $product->price);
             }
         }
-
-        // delivery rules
-        $deliveryCost = 0;
-        if ($catalogConfig->delivery_rules) {
-            foreach ($catalogConfig->delivery_rules as $rule) {
-                $ruleKey = \array_keys($rule['rule']);
-                switch ($ruleKey[0]) {
-                    case 'between':
-                        if ($totalCost >= $rule['rule']['between'][0] && $totalCost <=  $rule['rule']['between'][1]) {
-                            $deliveryCost = $rule['strategy']['value'];
-                        }
-                        break;
-                    case 'more_than': // TODO: Fix key name to more_or_equal
-                        if ($totalCost >= $rule['rule']['more_than'][0]) {
-                            $deliveryCost = $rule['strategy']['value'];
-                        }
-                        break;
-                }
-            }
-        }
-
+        
+        $deliveryCost = $this->deliveryRulesService->getDeliveryCost($catalogConfig->delivery_rules, $totalCost);
+        
         return $totalCost + $deliveryCost;
     }
 
