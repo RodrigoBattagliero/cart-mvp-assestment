@@ -4,29 +4,59 @@ namespace App\Service\Offers;
 
 use App\Dto\OfferDto;
 use App\Dto\ProductDto;
+use App\Entity\Cart;
+use App\Entity\Offer;
+use App\Entity\Product;
+use Doctrine\ORM\EntityManagerInterface;
 
 class OfferService
 {
     public function __construct(
-        private OfferFactory $offerFactory,
+        private EntityManagerInterface $em,
     )
-    {}
-    
-    public function processProduct(
-        ProductDto $product,
-        array $offers,
-        int $amount
-    ): array
     {
-        $partialTotal = 0;
-        $offer = $this->getOfferByProduct($product, $offers);
-        if ($offer) {
-            $offerStrategy = $this->offerFactory->getOfferStrategy($offer);
+    }
 
-            return $offerStrategy->applyOffer($product, $amount);            
+    public function saveOffers(array $offersDto): void
+    {
+        foreach ($offersDto as $dto) {
+            $offer = OfferFactory::fromDto(
+                $dto, 
+                $this->em->getRepository(Product::class)->findOneBy(['code' => $dto->product_trigger])
+            );
+
+            $this->em->persist($offer);
         }
+
+        $this->em->flush();
+    }
+
+    public function getAll(): ?array
+    {
+        return $this->em->getRepository(Offer::class)->findAll();
+    }
+
+    public function deleteAll(): void
+    {
+        $offers = $this->getAll();
+        foreach ($offers as $offer) {
+            $this->em->remove($offer);
+        }
+
+        $this->em->flush();
+    }
+    
+    public function processItem(Cart $cartItem): array
+    {
+        $offer = $this->em->getRepository(Offer::class)->findOneBy(['product' => $cartItem->getProduct()]);
+        if (!$offer) {
+            return [0, $cartItem->getAmount()];
+        }
+
+        $offerStrategy = OfferStrategyFactory::getOfferStrategy($cartItem, $offer);
+
+        return $offerStrategy->applyOffer();
         
-        return [$partialTotal, $amount];
     }
 
     private function getOfferByProduct(

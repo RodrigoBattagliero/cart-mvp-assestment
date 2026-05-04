@@ -2,25 +2,27 @@
 
 namespace App\Service\Offers;
 
-use App\Dto\ProductDto;
+use App\Entity\Cart;
+use App\Entity\Offer;
 
 class OfferStrategyDiscountByAmount implements OfferStrategyInterface
 {
     public function __construct(
-        private int $amount,
-        private float $pay,
+        private Cart $cartItem,
+        private Offer $offer,
     )
     {
     }
 
-    public function applyOffer(ProductDto $product, int $totalAmount): array
+    public function applyOffer(): array
     {
-        $partialTotal = 0;
-        while ($totalAmount >= $this->amount) {
-            $partialTotal += $product->price * $this->pay;
-            $totalAmount -= $this->amount;
+        $partialCost = 0;
+        $remainingAmount = $this->cartItem->getAmount();
+        while ($remainingAmount >= $this->offer->getAmount()) {
+            $partialCost += $this->cartItem->getProduct()->getPrice() * $this->offer->getPay();
+            $remainingAmount -= $this->cartItem->getAmount();
         }
-        return [$partialTotal, $totalAmount];
+        return [$partialCost, $remainingAmount];
     }
 
 }

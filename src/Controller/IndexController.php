@@ -18,19 +18,19 @@ class IndexController extends AbstractController
         private CartHandler $cartHandler,
     ) {}
 
-    #[Route('/api/get', name: 'app_get', methods: ['GET'])]
+    #[Route('/api/get-data', name: 'app_get', methods: ['GET'])]
     public function get(): JsonResponse
     {
         try {
-            $dto = $this->cartHandler->getConfiguration();
+            $data = $this->cartHandler->getConfiguration();
         } catch (Exception $e) {
-
+            dd($e);
         }
 
-        return $this->json($dto);
+        return $this->json($data);
     }
 
-    #[Route('/api/delete', name: 'app_delete', methods: ['GET'])]
+    #[Route('/api/delete-data', name: 'app_delete', methods: ['GET'])]
     public function delete(): JsonResponse
     {
         try {
@@ -42,7 +42,7 @@ class IndexController extends AbstractController
         return $this->json(null);
     }
 
-    #[Route('/api/init', name: 'app_init', methods: ['POST'])]
+    #[Route('/api/save-data', name: 'app_configuration_save', methods: ['POST'])]
     public function init(
         #[MapRequestPayload] CatalogConfigurationDto $catalogDto
     ): JsonResponse
@@ -56,21 +56,21 @@ class IndexController extends AbstractController
         return $this->json(null, 201);
     }
 
-    #[Route('/api/add', name: 'app_add_product', methods: ['PUT'])]
+    #[Route('/api/add-item', name: 'app_add_product', methods: ['PUT'])]
     public function addProduct(
         #[MapRequestPayload] AddProductToCart $addProductToCart
     ): JsonResponse
     {
         try {
-            $items = $this->cartHandler->addItem($addProductToCart);
+            $this->cartHandler->addItem($addProductToCart);
         } catch (Exception $e) {
             dd($e);
         }
 
-        return $this->json($items);
+        return $this->json([]);
     }
 
-    #[Route('/api/total', name: 'app_total', methods: ['GET'])]
+    #[Route('/api/get-total', name: 'app_total', methods: ['GET'])]
     public function getTotal(): JsonResponse
     {
         $total = $this->cartHandler->getTotal();

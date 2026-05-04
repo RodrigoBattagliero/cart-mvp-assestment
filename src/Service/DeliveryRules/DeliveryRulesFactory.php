@@ -3,16 +3,17 @@
 namespace App\Service\DeliveryRules;
 
 use App\Dto\DeliveryRuleDto;
+use App\Entity\DeliveryRules;
 
 class DeliveryRulesFactory
 {
-    public function createDeliveryRule(DeliveryRuleDto $deliveryRuleDto): ?DeliveryRulesInterface
+    static function fromDto(DeliveryRuleDto $dto): DeliveryRules
     {
-        $className = DeliveryRulesType::RULES_CLASSNAME[$deliveryRuleDto->rule];
-        
-        return new $className(
-            $deliveryRuleDto->params,
-            $deliveryRuleDto->value
-        );
+        $deliveryRule = new DeliveryRules();
+        $deliveryRule->setRule($dto->rule);
+        $deliveryRule->setParams($dto->params);
+        $deliveryRule->setValue($dto->value);
+
+        return $deliveryRule;
     }
 }

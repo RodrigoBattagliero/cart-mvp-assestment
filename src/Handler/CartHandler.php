@@ -5,8 +5,10 @@ namespace App\Handler;
 use App\Dto\AddProductToCart;
 use App\Dto\CatalogConfigurationDto;
 use App\Dto\ProductDto;
+use App\Service\Cart\ItemService;
 use App\Service\DeliveryRules\DeliveryRulesService;
 use App\Service\Offers\OfferService;
+use App\Service\Product\ProductService;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class CartHandler
@@ -15,69 +17,53 @@ class CartHandler
         private RequestStack $requestStack,
         private OfferService $offerService,
         private DeliveryRulesService $deliveryRulesService,
+        private ProductService $productService,
+        private ItemService $itemService,
     ) {}
 
     public function saveConfiguration(
         CatalogConfigurationDto $dto,
     ): void
     {
-        $session = $this->requestStack->getSession();
-        $session->set('catalog_config', $dto);
+        $this->productService->saveProducts($dto->products);
+        $this->offerService->saveOffers($dto->offers);
+        $this->deliveryRulesService->saveDeliveryRules($dto->delivery_rules);
     }
 
-    public function getConfiguration(): ?CatalogConfigurationDto
+    public function getConfiguration(): array
     {
-        $session = $this->requestStack->getSession();
-        dd($session->get('catalog_config'));
-        return $session->get('catalog_config');
+        return [
+            'product' => $this->productService->getAll(),
+            'service' => $this->offerService->getAll(),
+            'delivery_rules' => $this->deliveryRulesService->getAll(),
+            'cart_items' => $this->itemService->getAll(),
+        ];
     }
 
     public function unsetConfiguration(): void
     {
-        $session = $this->requestStack->getSession();
-        $session->set('catalog_config', null);
+        $this->deliveryRulesService->deleteAll();
+        $this->offerService->deleteAll();
+        $this->productService->deleteAll();
     }
 
-    public function addItem(AddProductToCart $dto): array
+    public function addItem(AddProductToCart $dto): void
     {
-        $session = $this->requestStack->getSession();
-        $items = $session->get('items');
-        if (!$items || !is_array($items)) {
-            $items[$dto->code] = 1;
-        } else {
-            if (isset($items[$dto->code])) {
-                $items[$dto->code] = $items[$dto->code] + 1;
-            } else {
-                $items[$dto->code] = 1;
-            }
-        }
-
-        $session->set('items', $items);
-
-        return $items;
+        $this->itemService->addItem($dto);
     }
 
-    public function getTotal()
+    public function getTotal(): float
     {
-        $session = $this->requestStack->getSession();
-        $items = $session->get('items');
-        /** @var CatalogConfigurationDto @catalogConfig  */
-        $catalogConfig = $session->get('catalog_config');
         $totalCost = 0;
-        foreach ($items as $code => $amount) {
-            $product = $this->getProductByCode($catalogConfig->products, $code);
-            if (isset($product)) {
-                [$partialCost, $remaningAmount] = $this->offerService->processProduct(
-                    $product,
-                    $catalogConfig->offers,
-                    $amount
-                );
-                
-                $totalCost += $partialCost + ($remaningAmount * $product->price);
-            }
+        $cartItems = $this->itemService->getAll();
+        foreach ($cartItems as $item) {
+            [$partialCost, $remaningAmount] = $this->offerService->processItem($item);
+            
+            $totalCost += $partialCost + ($remaningAmount * $item->getProduct()->getPrice());
         }
-        
-        $deliveryCost = $this->deliveryRulesService->getDeliveryCost($catalogConfig->delivery_rules, $totalCost);
+
+        //$deliveryCost = $this->deliveryRulesService->getDeliveryCost($catalogConfig->delivery_rules, $totalCost);
+        $deliveryCost = 0;
         
         return $totalCost + $deliveryCost;
     }

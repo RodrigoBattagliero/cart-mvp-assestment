@@ -8,7 +8,7 @@ readonly class ProductDto
 {
     public function __construct(
         #[Assert\NotBlank]
-        public string $product,
+        public string $name,
         
         #[Assert\NotBlank]
         public string $code,

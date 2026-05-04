@@ -3,16 +3,19 @@
 namespace App\Service\Offers;
 
 use App\Dto\OfferDto;
+use App\Entity\Offer;
+use App\Entity\Product;
 
 class OfferFactory
 {
-    public function getOfferStrategy(OfferDto $offer): ?OfferStrategyInterface
+    static public function fromDto(OfferDto $dto, Product $product): Offer
     {
-        $className = OfferType::OFFERS_CLASSNAME[$offer->type];
-        
-        return new $className(
-            $offer->amount,
-            $offer->pay
-        );
+        $offer = new Offer();
+        $offer->setType($dto->type);
+        $offer->setAmount($dto->amount);
+        $offer->setPay($dto->pay);
+        $offer->setProduct($product);
+
+        return $offer;
     }
 }
