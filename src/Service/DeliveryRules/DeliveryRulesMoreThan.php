@@ -6,7 +6,6 @@ class DeliveryRulesMoreThan implements DeliveryRulesInterface
 {
     public function __construct(
         private array $params,
-        private string $type,
         private float $value,
     )
     {

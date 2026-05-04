@@ -8,18 +8,11 @@ class DeliveryRulesFactory
 {
     public function createDeliveryRule(DeliveryRuleDto $deliveryRuleDto): ?DeliveryRulesInterface
     {
-        if ($deliveryRuleDto->rule == 'between') {
-            return new DeliveryRulesBetween(
-                $deliveryRuleDto->params,
-                $deliveryRuleDto->type,
-                $deliveryRuleDto->value
-            );
-        } else {
-            return new DeliveryRulesMoreThan(
-                $deliveryRuleDto->params,
-                $deliveryRuleDto->type,
-                $deliveryRuleDto->value
-            );
-        }
+        $className = DeliveryRulesType::RULES_CLASSNAME[$deliveryRuleDto->rule];
+        
+        return new $className(
+            $deliveryRuleDto->params,
+            $deliveryRuleDto->value
+        );
     }
 }

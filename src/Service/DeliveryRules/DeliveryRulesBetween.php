@@ -6,7 +6,6 @@ class DeliveryRulesBetween implements DeliveryRulesInterface
 {
     public function __construct(
         private array $params,
-        private string $type,
         private string $value,
     )
     {

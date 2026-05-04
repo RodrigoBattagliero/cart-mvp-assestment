@@ -8,12 +8,11 @@ class OfferFactory
 {
     public function getOfferStrategy(OfferDto $offer): ?OfferStrategyInterface
     {
-        if ($offer->type == 'discount_by_amount') {
-            return new OfferStrategyDiscountByAmount(
-                $offer->amount,
-                $offer->pay
-            );
-        }
-        return null;
+        $className = OfferType::OFFERS_CLASSNAME[$offer->type];
+        
+        return new $className(
+            $offer->amount,
+            $offer->pay
+        );
     }
 }
