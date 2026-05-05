@@ -19,7 +19,7 @@ cd cart-mvp-assestment/
 
 composer install
 
-php bin/console doctrine:migrations:migrate -y
+php bin/console doctrine:migrations:migrate
 
 symfony serve
 ```
