@@ -6,6 +6,7 @@ use App\Dto\AddProductToCart;
 use App\Entity\Cart;
 use App\Entity\Product;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ItemService
 {
@@ -35,8 +36,8 @@ class ItemService
     public function addItem(AddProductToCart $dto): void
     {
         $product = $this->em->getRepository(Product::class)->findOneBy(['code' => $dto->code]);
-        if (!$product) {
-            // TODO: exception
+        if ($product) {
+            throw new NotFoundHttpException('Product not found');
         }
         
         $cartItem = $this->getOrCreateCartItem($product);

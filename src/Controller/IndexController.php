@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Dto\AddProductToCart;
 use App\Dto\CatalogConfigurationDto;
 use App\Handler\CartHandler;
-use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
@@ -13,7 +12,6 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class IndexController extends AbstractController
 {
-
     public function __construct(
         private CartHandler $cartHandler,
     ) {}
@@ -21,23 +19,13 @@ class IndexController extends AbstractController
     #[Route('/api/get-data', name: 'app_get', methods: ['GET'])]
     public function get(): JsonResponse
     {
-        try {
-            $data = $this->cartHandler->getConfiguration();
-        } catch (Exception $e) {
-            dd($e);
-        }
-
-        return $this->json($data);
+        return $this->json($this->cartHandler->getConfiguration());
     }
 
     #[Route('/api/delete-data', name: 'app_delete', methods: ['GET'])]
     public function delete(): JsonResponse
     {
-        try {
-            $this->cartHandler->unsetConfiguration();
-        } catch (Exception $e) {
-
-        }
+        $this->cartHandler->unsetConfiguration();
 
         return $this->json(null);
     }
@@ -47,11 +35,7 @@ class IndexController extends AbstractController
         #[MapRequestPayload] CatalogConfigurationDto $catalogDto
     ): JsonResponse
     {
-        try {
-            $this->cartHandler->saveConfiguration($catalogDto);
-        } catch (Exception $e) {
-
-        }
+        $this->cartHandler->saveConfiguration($catalogDto);
 
         return $this->json(null, 201);
     }
@@ -61,11 +45,7 @@ class IndexController extends AbstractController
         #[MapRequestPayload] AddProductToCart $addProductToCart
     ): JsonResponse
     {
-        try {
-            $this->cartHandler->addItem($addProductToCart);
-        } catch (Exception $e) {
-            dd($e);
-        }
+        $this->cartHandler->addItem($addProductToCart);
 
         return $this->json([]);
     }
@@ -73,7 +53,8 @@ class IndexController extends AbstractController
     #[Route('/api/get-total', name: 'app_total', methods: ['GET'])]
     public function getTotal(): JsonResponse
     {
-        $total = $this->cartHandler->getTotal();
-        return $this->json(['total' => $total]);
+        return $this->json([
+            'total' => $this->cartHandler->getTotal()
+        ]);
     }
 }
