@@ -53,12 +53,12 @@ class Product
 
     public function getPrice(): ?float
     {
-        return $this->price;
+        return round($this->price, 2);
     }
 
     public function setPrice(float $price): static
     {
-        $this->price = $price;
+        $this->price = round($price, 2);
 
         return $this;
     }

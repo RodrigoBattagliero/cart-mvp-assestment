@@ -44,6 +44,7 @@ class CartHandler
     {
         $this->deliveryRulesService->deleteAll();
         $this->offerService->deleteAll();
+        $this->itemService->deleteAll();
         $this->productService->deleteAll();
     }
 
@@ -62,20 +63,8 @@ class CartHandler
             $totalCost += $partialCost + ($remaningAmount * $item->getProduct()->getPrice());
         }
 
-        //$deliveryCost = $this->deliveryRulesService->getDeliveryCost($catalogConfig->delivery_rules, $totalCost);
-        $deliveryCost = 0;
+        $deliveryCost = $this->deliveryRulesService->getDeliveryCost($totalCost);
         
-        return $totalCost + $deliveryCost;
-    }
-
-    private function getProductByCode(array $products, string $code): ?ProductDto
-    {
-        $product = array_filter($products, function($p) use($code){
-            return $code == $p->code;
-        });
-        if (empty($product)) {
-            return null;
-        }
-        return array_first($product);
+        return round($totalCost + $deliveryCost, 2);
     }
 }

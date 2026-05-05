@@ -2,17 +2,14 @@
 
 namespace App\Service\DeliveryRules;
 
-use App\Dto\DeliveryRuleDto;
+use App\Entity\DeliveryRules;
 
 class DeliveryRulesStrategyFactory
 {
-    static public function createDeliveryRule(DeliveryRuleDto $deliveryRuleDto): ?DeliveryRulesInterface
+    static public function createDeliveryRule(DeliveryRules $deliveryRule): ?DeliveryRulesInterface
     {
-        $className = DeliveryRulesType::RULES_CLASSNAME[$deliveryRuleDto->rule];
+        $className = DeliveryRulesType::RULES_CLASSNAME[$deliveryRule->getRule()];
         
-        return new $className(
-            $deliveryRuleDto->params,
-            $deliveryRuleDto->value
-        );
+        return new $className();
     }
 }

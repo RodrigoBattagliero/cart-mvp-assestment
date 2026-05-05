@@ -20,6 +20,16 @@ class ItemService
         return $this->em->getRepository(Cart::class)->findAll();
     }
 
+    public function deleteAll(): void
+    {
+        $items = $this->getAll();
+        foreach ($items as $item) {
+            $this->em->remove($item);
+        }
+
+        $this->em->flush();
+    }
+
     public function addItem(AddProductToCart $dto): void
     {
         $product = $this->em->getRepository(Product::class)->findOneBy(['code' => $dto->code]);

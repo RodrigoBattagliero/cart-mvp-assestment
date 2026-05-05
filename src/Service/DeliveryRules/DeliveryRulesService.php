@@ -38,13 +38,13 @@ class DeliveryRulesService
         $this->em->flush();
     }
 
-    public function getDeliveryCost(?array $deliveryRules, float $totalCost): float 
+    public function getDeliveryCost(float $totalCost): float 
     {
+        $deliveryRules = $this->getAll();
         if ($deliveryRules) {
-
             foreach ($deliveryRules as $rule) {
                 $deliveryRule = DeliveryRulesStrategyFactory::createDeliveryRule($rule);
-                $deliveryCost = $deliveryRule->applyDeliveryDiscountRule($totalCost);
+                $deliveryCost = $deliveryRule->applyDeliveryDiscountRule($rule, $totalCost);
                 
                 if ($deliveryCost !== null) {
                     return $deliveryCost;
