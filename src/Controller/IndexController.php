@@ -22,7 +22,7 @@ class IndexController extends AbstractController
         return $this->json($this->cartHandler->getConfiguration());
     }
 
-    #[Route('/api/delete-data', name: 'app_delete', methods: ['GET'])]
+    #[Route('/api/delete-data', name: 'app_delete', methods: ['DELETE'])]
     public function delete(): JsonResponse
     {
         $this->cartHandler->unsetConfiguration();
