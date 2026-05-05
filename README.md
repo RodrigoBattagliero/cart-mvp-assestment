@@ -6,7 +6,7 @@
 - Install symfony cli.
 
 ### Install
-git clone
+git clone https://github.com/RodrigoBattagliero/cart-mvp-assestment.git
 cd cart-mvp-assestment/
 php bin/console doctrine:migrations:migrate
 symfony serve
