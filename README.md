@@ -3,6 +3,9 @@
 ## Set up
 
 ### Pre requisites
+- git
+- php8.5
+- Composer
 - Install symfony cli.
 
 ### Install
