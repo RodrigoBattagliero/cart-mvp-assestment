@@ -9,6 +9,8 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class ItemService
 {
+    const DEFAULT_AMOUNT = 1;
+    
     public function __construct(
         private EntityManagerInterface $em,
     )
@@ -37,21 +39,20 @@ class ItemService
             // TODO: exception
         }
         
-        $cartItem = $this->updateOrCreateCartItem($product);
+        $cartItem = $this->getOrCreateCartItem($product);
+        $cartItem->setAmount($cartItem->getAmount() + 1);
 
         $this->em->persist($cartItem);
         $this->em->flush();
     }
 
-    private function updateOrCreateCartItem(Product $product): Cart
+    private function getOrCreateCartItem(Product $product): Cart
     {
         $cartItem = $this->em->getRepository(Cart::class)->findOneBy(['product' => $product]);
         if (!$cartItem) {
             $cartItem = new Cart();
             $cartItem->setProduct($product);
-            $cartItem->setAmount(1);
-        } else {
-            $cartItem->setAmount($cartItem->getAmount() + 1);
+            $cartItem->setAmount(self::DEFAULT_AMOUNT);
         }
 
         return $cartItem;

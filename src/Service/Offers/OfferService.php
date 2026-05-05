@@ -44,11 +44,11 @@ class OfferService
         $this->em->flush();
     }
     
-    public function processItem(Cart $cartItem): array
+    public function processItem(Cart $cartItem): float
     {
         $offer = $this->em->getRepository(Offer::class)->findOneBy(['product' => $cartItem->getProduct()]);
         if (!$offer) {
-            return [0, $cartItem->getAmount()];
+            return 0;
         }
 
         $offerStrategy = OfferStrategyFactory::getOfferStrategy($offer);

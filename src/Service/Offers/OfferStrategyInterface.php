@@ -8,5 +8,5 @@ use App\Entity\Offer;
 
 interface OfferStrategyInterface
 {
-    public function applyOffer(Cart $cartItem, Offer $offer,): array;
+    public function applyOffer(Cart $cartItem, Offer $offer,): float;
 }

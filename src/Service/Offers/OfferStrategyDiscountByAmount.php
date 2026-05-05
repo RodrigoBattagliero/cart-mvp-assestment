@@ -7,15 +7,18 @@ use App\Entity\Offer;
 
 class OfferStrategyDiscountByAmount implements OfferStrategyInterface
 {
-    public function applyOffer(Cart $cartItem,Offer $offer,): array
+    public function applyOffer(Cart $cartItem, Offer $offer): float
     {
         $partialCost = 0;
         $remainingAmount = $cartItem->getAmount();
+
         while ($remainingAmount >= $offer->getAmount()) {
             $partialCost += $cartItem->getProduct()->getPrice() * $offer->getPay();
-            $remainingAmount -= $cartItem->getAmount();
+            $remainingAmount -= $offer->getAmount();
         }
-        return [$partialCost, $remainingAmount];
-    }
 
+        $cartItem->setAmount($remainingAmount);
+
+        return round($partialCost, 2);
+    }
 }
