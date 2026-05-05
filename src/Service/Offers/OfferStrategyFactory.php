@@ -2,7 +2,6 @@
 
 namespace App\Service\Offers;
 
-use App\Entity\Cart;
 use App\Entity\Offer;
 
 class OfferStrategyFactory
