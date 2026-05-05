@@ -10,7 +10,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ItemService
 {
-    const DEFAULT_AMOUNT = 1;
+    const DEFAULT_AMOUNT = 0;
     
     public function __construct(
         private EntityManagerInterface $em,

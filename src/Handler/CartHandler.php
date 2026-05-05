@@ -51,13 +51,17 @@ class CartHandler
     public function getTotal(): float
     {
         $totalCost = 0;
+        $deliveryCost = 0;
         $cartItems = $this->itemService->getAll();
-        foreach ($cartItems as $item) {
-            $partialCost = $this->offerService->processItem($item);
-            $totalCost += $partialCost + ($item->getAmount() * $item->getProduct()->getPrice());
-        }
+        if ($cartItems) {
+            foreach ($cartItems as $item) {
+                $partialCost = $this->offerService->processItem($item);
+                $totalCost += $partialCost + ($item->getAmount() * $item->getProduct()->getPrice());
+            }
+    
+            $deliveryCost = $this->deliveryRulesService->getDeliveryCost($totalCost);
 
-        $deliveryCost = $this->deliveryRulesService->getDeliveryCost($totalCost);
+        }
         
         return round($totalCost + $deliveryCost, 2);
     }
