@@ -2,8 +2,6 @@
 
 namespace App\Service\Offers;
 
-use App\Dto\OfferDto;
-use App\Dto\ProductDto;
 use App\Entity\Cart;
 use App\Entity\Offer;
 use App\Entity\Product;
