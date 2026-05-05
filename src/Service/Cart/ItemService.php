@@ -36,7 +36,7 @@ class ItemService
     public function addItem(AddProductToCart $dto): void
     {
         $product = $this->em->getRepository(Product::class)->findOneBy(['code' => $dto->code]);
-        if ($product) {
+        if (!$product) {
             throw new NotFoundHttpException('Product not found');
         }
         
