@@ -47,7 +47,7 @@ class DeliveryRulesService
                 $deliveryCost = $deliveryRule->applyDeliveryDiscountRule($rule, $totalCost);
                 
                 if ($deliveryCost !== null) {
-                    return $deliveryCost;
+                    return round($deliveryCost, 2);
                 }
             }
         }
