@@ -24,6 +24,8 @@ php bin/console doctrine:migrations:migrate
 symfony serve
 ```
 
+The app will run in http://localhost:8000/
+
 ## Usage
 
 ### Save data
