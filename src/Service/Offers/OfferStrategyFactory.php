@@ -7,10 +7,10 @@ use App\Entity\Offer;
 
 class OfferStrategyFactory
 {
-    static public function getOfferStrategy(Cart $cartItem, Offer $offer): ?OfferStrategyInterface
+    static public function getOfferStrategy(Offer $offer): ?OfferStrategyInterface
     {
         $className = OfferType::OFFERS_CLASSNAME[$offer->getType()];
         
-        return new $className($cartItem, $offer);
+        return new $className();
     }
 }

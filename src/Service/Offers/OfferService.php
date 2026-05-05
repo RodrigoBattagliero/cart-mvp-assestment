@@ -53,9 +53,8 @@ class OfferService
             return [0, $cartItem->getAmount()];
         }
 
-        $offerStrategy = OfferStrategyFactory::getOfferStrategy($cartItem, $offer);
+        $offerStrategy = OfferStrategyFactory::getOfferStrategy($offer);
 
-        return $offerStrategy->applyOffer();
-        
+        return $offerStrategy->applyOffer($cartItem, $offer);
     }
 }
