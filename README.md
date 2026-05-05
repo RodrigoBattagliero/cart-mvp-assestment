@@ -1,8 +1,10 @@
-# MVP ---
+# MVP - Cart Service
 
 ## Set up
 
 ### Pre requisites
+In order to proceed with the instalation, you need to have these packages installed.
+
 - git
 - php8.5
 - Composer
@@ -10,31 +12,28 @@
 
 ### Install
 
-```
+``` bash
 git clone https://github.com/RodrigoBattagliero/cart-mvp-assestment.git
-```
 
-```
 cd cart-mvp-assestment/
-```
 
-```
 composer install
-```
 
-```
 php bin/console doctrine:migrations:migrate -y
-```
 
-```
 symfony serve
 ```
 
 ## Usage
 
-- POST api/save-data
+### Save data
+This endpoint stores data config for products, offers and delivery rules. 
 
-Request body 
+**Endpoint**
+
+```POST api/save-data```
+
+**Request body**
 ```json
 {
   "products": [
@@ -64,22 +63,36 @@ Request body
 }
 ```
 
-Response code 201
+**Response code**
 
-- PUT api/add-item 
+```201```
 
-Request body
+### Add item to cart
+Increase the amount of items for the product.
+
+**Endpoint**
+
+```PUT api/add-item``` 
+
+**Request body**
 ```json
 {
   "code": "01"
 }
 ```
 
-Response code 201
+**Response code**
 
-- GET api/get-data
+```201```
 
-Response
+### Get data
+Returns data store in api/save-data.
+
+**Endpoint**
+
+```GET api/get-data```
+
+**Response**
 ```json
 {
 	"product": [
@@ -181,17 +194,27 @@ Response
 }
 ```
 
-- DELETE api/delete-data
+### Delete data
+Delete data store with api/save-data
 
-Response code 200
+**Endpoint**
 
-- GET api/get-total
+```DELETE api/delete-data```
 
-Response
+**Response**
+
+```code 200```
+
+### Get total
+Return the total cost of the cart. This includes offers and delivery rules discount.
+
+**Endpoint**
+
+```GET api/get-total```
+
+**Response**
 ```json
 {
 	"total": 0
 }
 ```
-
-## Notes
