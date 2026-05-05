@@ -8,7 +8,7 @@ In order to proceed with the instalation, you need to have these packages instal
 - git
 - php8.5
 - Composer
-- Install symfony cli.
+- Symfony cli.
 
 ### Install
 
