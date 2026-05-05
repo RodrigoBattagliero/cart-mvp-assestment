@@ -218,3 +218,8 @@ Return the total cost of the cart. This includes offers and delivery rules disco
 	"total": 0
 }
 ```
+
+## Notes
+- No unit test were consider.
+- There is always stock for products.
+- Offers are trigger by product. 
